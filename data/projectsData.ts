@@ -7,20 +7,25 @@ interface Project {
 
 const projectsData: Project[] = [
   {
-    title: 'A Search Engine',
-    description: `What if you could look up any information in the world? Webpages, images, videos
-    and more. Google has many features to help you find exactly what you're looking
-    for.`,
-    imgSrc: '/static/images/google.png',
-    href: 'https://www.google.com',
+    title: 'Personal Blog Platform',
+    description: `A modern, responsive blog built with Next.js and Tailwind CSS. Features include 
+    dark mode, search functionality, and MDX support for rich content creation.`,
+    imgSrc: '/static/images/blog-platform.png',
+    href: 'https://github.com/quo/my-blog',
   },
   {
-    title: 'The Time Machine',
-    description: `Imagine being able to travel back in time or to the future. Simple turn the knob
-    to the desired date and press "Go". No more worrying about lost keys or
-    forgotten headphones with this simple yet affordable solution.`,
-    imgSrc: '/static/images/time-machine.jpg',
-    href: '/blog/the-time-machine',
+    title: 'Task Management App',
+    description: `A full-stack task management application with real-time updates, user authentication, 
+    and collaborative features. Built with React, Node.js, and MongoDB.`,
+    imgSrc: '/static/images/task-app.png',
+    href: 'https://github.com/quo/task-manager',
+  },
+  {
+    title: 'Weather Dashboard',
+    description: `A beautiful weather dashboard that displays current conditions and forecasts. 
+    Integrates with multiple weather APIs and features interactive charts and maps.`,
+    imgSrc: '/static/images/weather-dashboard.png',
+    href: 'https://github.com/quo/weather-dashboard',
   },
 ]
 
