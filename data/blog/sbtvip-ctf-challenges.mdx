@@ -169,9 +169,9 @@ with codecs.open('rockyou.txt', 'r', encoding='utf8', errors='ignore') as fin:
             for last_hex_digit in string.hexdigits:
                 hex_text = f"{first_hex_digit}{new_text}{last_hex_digit}@"
                 
-                hash = '01F3273F68195C29A1A2365BE7AD2B1AAD469A73'		
+                target_hash = '01F3273F68195C29A1A2365BE7AD2B1AAD469A73'		
                 sha = hashlib.sha1(hex_text.encode('utf-8')).hexdigest()
-                if sha.upper() ==  hash.upper():
+                if sha.upper() ==  target_hash.upper():
                     print(f"FOUND MATCH: {hex_text}")
                     with open('jumbled_flag.txt', 'w') as fout:
                         fout.write(f"{hex_text}")
