@@ -1,0 +1,77 @@
+---
+title: 'Crackme Challenge #3 - Ringzer0 Crack Me 1'
+date: '2019-11-27T00:00:00.000Z'
+lastmod: '2019-11-27T00:00:00.000Z'
+draft: false
+tags: ['crackme', 'reverse-engineering', 'ringzer0', 'ollydbg', 'ida', 'peview', 'resources']
+authors: ['default']
+summary: 'Walkthrough of Ringzer0\'s Crack Me 1 challenge by Mr.Un1k0d3r, demonstrating PE resource analysis and dynamic reverse engineering techniques.'
+---
+
+Today we'll be looking at a ringzer0 challenge called "Crack Me 1" made by Mr.Un1k0d3r and can be found here: https://ringzer0ctf.com/challenges/9 - the challenge is worth 3 points.
+
+The goal of the challenge is to find the flag hidden within.
+
+When first executing the executable, we are presented with the following MessageBox:
+
+![Initial MessageBox](/static/images/blog/crackme-3-1.png)
+
+After pressing OK, the program exits.
+
+# Static analysis:
+
+I noticed in PEView that there is a custom resource section, suggesting that their might be hidden data within:
+
+![PEView Resource Section](/static/images/blog/crackme-3-2.png)
+
+As I suspected, I was right. We can see the first bytes represent the ASCII value "MZ", which is the magic number for an executable. This is also confirmed by the "This program cannot be run in DOS mode" message. Almost every Windows executable has this message at the beginning of the header.
+
+If we scroll further down, we can see some interesting text:
+
+![Resource Content](/static/images/blog/crackme-3-3.png)
+
+So far, we have deduced that there is a resource section hidden within the main PE file that also contains a PE file. We have found that a "Secret Message" may be hidden within the nested PE file.
+
+Moving over to IDA, we see the string that is used in the MessageBox when first executing the program. Taking a look at the imports, we see imports such as FindResourceA, LoadResource, MessageBoxA, AddAtomA, FindAtomA, and GetAtomNameA.
+
+We will focus on the Resource functions for now since we found an embedded exe within the resource section of the file.
+
+Our next goal is to find out how the resource is being loaded and what it's being loaded into. We might be able to see the flag using some dynamic analysis.
+
+Let's hop over to Ollydbg.
+
+# Dynamic analysis:
+
+Stepping over instructions, we find ourselves in a function that has a peculiar ASCII string. The loop seems to call the "rand" function and creates a random string. Executing this loop multiple times yields different strings. As you can see below, the string returned for this one was "vnasekutos":
+
+![Random String Generation](/static/images/blog/crackme-3-4.png)
+
+Stepping a little further, we can see another string, ".dll". Interesting.
+
+![DLL Extension](/static/images/blog/crackme-3-5.png)
+
+After the above function exits, we find ourselves in the function that loads our resource. As you can see below, it is calling LoadResource for the RT_RCDATA section, which matches with what we found using PEView.
+
+![LoadResource Call](/static/images/blog/crackme-3-6.png)
+
+After stepping a little more, we can see a call to strcat which concatenates our string we found earlier to another string with the value set as our AppData\Roaming directory.
+
+![String Concatenation](/static/images/blog/crackme-3-7.png)
+
+Finally, we can see a call to CreateFileA and WriteFile. We can now suspect that each time we execute the crack me, it creates a randomly-named dll file in our AppData\Roaming directory, loads the PE file found in the resource section and writes the PE file to our dll file.
+
+Let's take a look at that dll file.
+
+As you can see, I have executed the crack me a few times already:
+
+![AppData Directory](/static/images/blog/crackme-3-8.png)
+
+When viewing one of these dll's in IDA, we quickly view the imports window and select the MessageBoxA function. We're taken here:
+
+![DLL Analysis](/static/images/blog/crackme-3-9.png)
+
+This is the same "Secret Message" string we saw earlier when viewing the resource section in PEView.
+
+Let's see if we can call the DisplayMessage function to display the secret message for us:
+
+![DisplayMessage Function](/static/images/blog/crackme-3-10.png)
