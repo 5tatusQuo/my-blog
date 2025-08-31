@@ -15,7 +15,7 @@ const siteMetadata = {
   locale: 'en-au',
   // set to true if you want a navbar fixed to the top
   stickyNav: true,
-  analytics: {
+  /*analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
     // supports Plausible, Simple Analytics, Umami, Posthog or Google Analytics.
@@ -73,7 +73,7 @@ const siteMetadata = {
       // This corresponds to the `data-lang="en"` in giscus's configurations
       //lang: 'en',
     //},
-  //},
+  //},*/
   search: {
     provider: 'kbar', // kbar or algolia
     kbarConfig: {
