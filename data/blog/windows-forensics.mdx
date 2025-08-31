@@ -45,7 +45,7 @@ I saw this before:
 
 We can use Eric Zimmerman's RBCmd
 
-`RBCmd.exe -f $IWKWHDC.docx`
+`RBCmd.exe -f &#36;IWKWHDC.docx`
 
 It prints the original file name, and the file was deleted on `2022-08-21 13:03:33`.
 
@@ -76,7 +76,7 @@ Found this on MACB Timestamps: https://cscclabs.medium.com/mac-b-timestamps-86b4
 
 We can explore the MFT file for more information on this file.
 
-`python analyzeMFT.py -f $MFT -o output.csv`
+`python analyzeMFT.py -f &#36;MFT -o output.csv`
 
 After searching for the exe in Notepad++, we can see the original creation time.
 
@@ -90,7 +90,7 @@ Reviewing the MFT output, I was looking at the wrong field (Standard) instead of
 
 The tampered time is the STD, which again, can be altered by user level processes. The original creation time is found in the `FN Info Creation Date` field.
 
-Timestamps are analyzed using the MFT file, comparing the $STANDARD_INFO (tampered) and $FILE_NAME (original) attributes to identify discrepancies.
+Timestamps are analyzed using the MFT file, comparing the &#36;STANDARD_INFO (tampered) and &#36;FILE_NAME (original) attributes to identify discrepancies.
 
 **5. The attacker set up persistence by manipulating registry keys. All we know is that GlobalFlags image file technique was used to set up persistence. When exiting a certain process, the attacker persistence executable is executed. What's the name of that process?**
 
