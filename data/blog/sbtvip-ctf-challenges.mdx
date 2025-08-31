@@ -121,7 +121,7 @@ This challenge was meant to be cracked using John The Ripper, however, I did not
 
 In order to compute hashes and compare it to the one provided in the description of the challenge, we first need to determine what type of hash it is. Using Hash Analyzer, we can see it is a SHA1 hash.
 
-Overall, we need to derive a password in the format of <hex_digit> <first_letter_capitalized>  <lowercase_leetspeak> <hex_digit> <@_sign>.
+Overall, we need to derive a password in the format of hex_digit + first_letter_capitalized + lowercase_leetspeak + hex_digit + @_sign.
 
 We do this by first looping through the rockyou.txt file (HUGE file by the way, 14 million lines long), capitilize the first letter, substitute applicable letters for their leet counterparts (remember Python strings are immutable), prepend and append a hex digit to the output, and append an @ sign to the end of the final string.
 
