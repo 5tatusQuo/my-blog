@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flare-on 2019 Challenge #3 - Memecat Battlestation | Quo</title>
+  <meta name="description" content="Walkthrough of Flare-on 2019 challenge #3 - Memecat Battlestation, demonstrating .NET reverse engineering techniques using dnSpy.">
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a class="site-title" href="../../index.html">Quo</a>
+      <nav>
+        <a href="../../blog/index.html">blog</a>
+        <a href="../../projects/index.html">projects</a>
+        <a href="../../about/index.html">about</a>
+        <a href="https://github.com/5tatusQuo">github</a>
+      </nav>
+    </header>
+    <main>
+      <article class="post">
+        <p class="date">6 Oct 2019</p>
+        <h1>Flare-on 2019 Challenge #3 - Memecat Battlestation</h1>
+        <p class="tags"><span>flareon</span> <span>reverse-engineering</span> <span>.net</span> <span>dnspy</span> <span>ctf</span></p>
+        <div class="content">
+<p>Welcome to my first Flare-on 2019 challenge write up. This challenge is called Memecat Battlestation.</p>
+<p>The challenge comes with a readme that reads:</p>
+<p>&gt;Welcome to the Sixth Flare-On Challenge! This is a simple game. Reverse engineer it to figure out what &quot;weapon codes&quot; you need to enter to defeat each of the two enemies and the victory screen will reveal the flag. Enter the flag here on this site to score and move on to the next level. &gt;* This challenge is written in .NET. If you don't already have a favorite .NET reverse engineering tool I recommend dnSpy &gt;* If you already solved the full version of this game at our booth at BlackHat  or the subsequent release on twitter, congratulations, enter the flag from the victory screen now to bypass this level.</p>
+<h1>Dynamic Analysis:</h1>
+<p>When first starting up the application, you are presented with the following screen:</p>
+<figure><img src="../../static/images/blog/flareon-2019-1.png" alt="Game Interface"><figcaption>Game Interface</figcaption></figure>
+<p>After typing in &quot;test&quot; as the weapon arming code, a small text message to the right of the TextBox pops up, indicating we've entered in the wrong code.</p>
+<p>There's not much to it, so let's try to find the code using static analysis.</p>
+<h1>Static Analysis:</h1>
+<p>When we load the binary in dnSpy, we see a lot of juicy functions and form controls:</p>
+<figure><img src="../../static/images/blog/flareon-2019-2.png" alt="dnSpy Analysis"><figcaption>dnSpy Analysis</figcaption></figure>
+<p>We turn our attention to the FireButton_Click function. Immediately, we find the required code to fire the weapon:</p>
+<figure><img src="../../static/images/blog/flareon-2019-3.png" alt="FireButton Click Function"><figcaption>FireButton Click Function</figcaption></figure>
+<p>We enter the &quot;RAINBOW&quot; code into the application and a short animation plays, before advancing onto stage 2.</p>
+<p>We saw the Stage2Form class earlier. Again, we turn to a function called &quot;FireButton_Click&quot;, which checks if the code we entered matches the return value from a function called &quot;isValidWeaponCode&quot;. Let's take a look at that function:</p>
+<figure><img src="../../static/images/blog/flareon-2019-4.png" alt="isValidWeaponCode Function"><figcaption>isValidWeaponCode Function</figcaption></figure>
+<p>We can see it takes our entered code and converts it to a CharArray. It creates a for loop for the duration of our code length. Within the loop it copies our char array into another char array. It takes an index of our loop counter and uses that to access the array and XOR's it with 'A'.</p>
+<p>Our final char array should equal the return value.</p>
+<p>A quick Python script and we should be able to decode this function:</p>
+<pre><code>array = [0x3, ' ', '&amp;', '$', '-', 0x1E, 0x2, ' ', '/', '/', '.', '/']
+array2 = []
+
+for char in array:
+ if type(char) is str:
+  result = int(hex(ord(char)), 16) ^ int(hex(ord('A')), 16)
+ else:
+  result = int(hex(char), 16) ^ int(hex(ord('A')), 16)
+ array2.append(hex(result))
+ 
+print(array2)</code></pre>
+<p>Entering in the result to a hex to ASCII converter and we get our final answer:</p>
+<figure><img src="../../static/images/blog/flareon-2019-5.png" alt="Hex to ASCII Conversion"><figcaption>Hex to ASCII Conversion</figcaption></figure>
+<p>We enter our code into the Stage2Form TextBox and retrieve our flag:</p>
+<figure><img src="../../static/images/blog/flareon-2019-6.png" alt="Final Flag"><figcaption>Final Flag</figcaption></figure>
+        </div>
+        <p class="back"><a href="../index.html">back to blog</a></p>
+      </article>
+    </main>
+    <footer>
+      <span>Quo</span><span> · </span><a href="../../index.html">home</a><span> · </span><a href="../../blog/index.html">blog</a><span> · </span><a href="../../projects/index.html">projects</a>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NoREpls Part 0-3 - DTM Crackme Series | Quo</title>
+  <meta name="description" content="Walkthrough of the NoREpls crackme series by DTM, demonstrating progressive reverse engineering techniques across four increasingly complex challenges.">
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a class="site-title" href="../../index.html">Quo</a>
+      <nav>
+        <a href="../../blog/index.html">blog</a>
+        <a href="../../projects/index.html">projects</a>
+        <a href="../../about/index.html">about</a>
+        <a href="https://github.com/5tatusQuo">github</a>
+      </nav>
+    </header>
+    <main>
+      <article class="post">
+        <p class="date">18 Dec 2019</p>
+        <h1>NoREpls Part 0-3 - DTM Crackme Series</h1>
+        <p class="tags"><span>crackme</span> <span>reverse-engineering</span> <span>dtm</span> <span>ollydbg</span> <span>ida</span> <span>license-cracking</span></p>
+        <div class="content">
+<p>Today we'll be looking at a few crackmes called NoREpls made by DTM. The challenges can be found here: <a href="https://0x00sec.org/t/challenge-collection-reverse-engineering-and-crackme/3027">https://0x00sec.org/t/challenge-collection-reverse-engineering-and-crackme/3027</a></p>
+<h1>Part 0:</h1>
+<p>When executing the program, we are greeted with a simple window with one button. The button does not do anything interesting. The program has two options in the menu bar, file and about. We can use the about menu to either register the program or show a MessageBox with a description of the program. The file menu has only one option, exit.</p>
+<figure><img src="../../static/images/blog/norepls-1.png" alt="Main Window"><figcaption>Main Window</figcaption></figure>
+<figure><img src="../../static/images/blog/norepls-2.png" alt="About Menu"><figcaption>About Menu</figcaption></figure>
+<p>Pretty simple, let's try and crack the program.</p>
+<h2>Static analysis:</h2>
+<p>Using strings on the program does not yield anything out of the ordinary except for the strings we saw in each window.</p>
+<p>We load the binary into IDA Pro and check out the imports. We are only interested in one import, that being GetDlgItemTextW. This is the function used to get the user input from the registration window. Checking the cross-references for this function, there is only one, which leads us to address 0x401000.</p>
+<p>Right away, we can see what looks to be the serial right in front of us. Let's try it.</p>
+<figure><img src="../../static/images/blog/norepls-3.png" alt="IDA Analysis"><figcaption>IDA Analysis</figcaption></figure>
+<figure><img src="../../static/images/blog/norepls-4.png" alt="Registration Success"><figcaption>Registration Success</figcaption></figure>
+<h1>Part 1:</h1>
+<p>Part 1 is much like the same as before, however this time a &quot;(demo version)&quot; is displayed in the title. We can enter some text into the text box area, but we cannot save as we need to register first.</p>
+<figure><img src="../../static/images/blog/norepls-5.png" alt="Demo Version Window"><figcaption>Demo Version Window</figcaption></figure>
+<figure><img src="../../static/images/blog/norepls-6.png" alt="Registration Dialog"><figcaption>Registration Dialog</figcaption></figure>
+<h2>Static analysis:</h2>
+<p>Strings does not yield any intersting strings. As such, we are interested in whatever handles our input, leading us to GetDlgItemTextA. This time, there are two cross-references, one for saving our text to a file, and the other for handling our registration.</p>
+<p>When navigating to the function where our GetDlgItemTextA function is, we are lead to subroutine 0x4013B0.</p>
+<p>After some instructions which look like it's looping through our registration code (returned from GetDlgItemTextA) to verify we have entered in something at all, we enter another subroutine at 0x401330 which contains two calls to CryptBinaryToStringA. At the end of this subroutine, it looks like it will either return 1 or 0. We will rename this function &quot;crypt_func&quot;. Going back to subroutine 0x4013B0, if our return value from crypt_func is 1, we enter another subroutine at 0x402E30. One of the parameters to this function is very interesting:</p>
+<figure><img src="../../static/images/blog/norepls-7.png" alt="Function Parameters"><figcaption>Function Parameters</figcaption></figure>
+<p>Sub_402E30 looks even more interesting and will need to be further analyzed using dynamic analysis.</p>
+<p>Before we do that, let's find out what CryptBinaryToStringA does, as crypt_func takes our registration code and manipulates it somehow.</p>
+<p>Using MSDN, we can see that the function converts an array of bytes into a formatted string.</p>
+<p>We can see two calls to CryptBinaryToStringA. After the first call, a rabbit hole is introduced so it will be best to analyze these calls using dynamic analysis.</p>
+<p>The second call is more interesting because the parameter for the buffer to receive the converted string, pszString, is defined, whereas with the first call, it was set to NULL. With this information, we cannot expect to rely on the first call to CryptBinaryToStringA as it does not immediately return the converted string.</p>
+<p>For the second call, it takes five parameters. pcchString is set to the return value of the previous function called after our first call to CryptBinaryToStringA at address 0x401782, pszString is set to an address located in ESI, dwFlags is set to 1, which means CRYPT_STRING_BASE64, cbBinary is set to the size of our registration code, and pbBinary is a pointer to the array of bytes to be converted into a string, which is our registration code.</p>
+<p>Judging from this, crypt_func converts our registration code into base64. At this stage, we can probably guess that our base64-encoded string is compared to the one in the above picture in the function located at 0x402E30. Let's verify this.</p>
+<h2>Dynamic analysis:</h2>
+<p>In Olly, afetr we enter the function at 0x402E30, we can see the following on our stack:</p>
+<figure><img src="../../static/images/blog/norepls-8.png" alt="Stack Analysis"><figcaption>Stack Analysis</figcaption></figure>
+<p>&quot;VEVTVA==&quot; is the result of our registration code, which was set to &quot;TEST&quot;. Stepping through the function shows us that each byte is being compared with the suspected base64-encoded string. Therefore, we should easily be able to decode the string to find the registration code, which returns &quot;NOREPLS-MEKI-30H2-AMN3-49JF&quot;.</p>
+<figure><img src="../../static/images/blog/norepls-9.png" alt="Decoded Serial"><figcaption>Decoded Serial</figcaption></figure>
+<h1>Part 2:</h1>
+<p>As with each challenge, it builds on top of each other. This time when executing the program, a small dialog appears and we have to wait 5 seconds before we can &quot;Continue unregistered&quot;.</p>
+<figure><img src="../../static/images/blog/norepls-10.png" alt="Wait Dialog"><figcaption>Wait Dialog</figcaption></figure>
+<p>The main window is the exact same as the previous challenge.</p>
+<h2>Static analysis:</h2>
+<p>Examing the strings, I can see a &quot;SERIAL=&quot; string. When we double click on this string, we see some other interesting strings that we did not see in the strings window:</p>
+<figure><img src="../../static/images/blog/norepls-11.png" alt="String Analysis"><figcaption>String Analysis</figcaption></figure>
+<p>The &quot;License.lic&quot; looks interesting, let's double click this one. We can see a call to CreateFileW which creates a file called &quot;License.lic&quot;, and a call to WriteFile, which writes the &quot;SERIAL=&quot; string to the file. If we scroll up a bit, we can see a call to GetDlgItemTextA. Below that, we can see a peculiar string that might look like the encoded serial the program is expecting.</p>
+<p>Further analysis will need to be carried out to see how we can match the program's expected registration code.</p>
+<h2>Dynamic analysis:</h2>
+<p>With a registration code of &quot;TEST&quot;, we come to this position (I have breakpointed all interesting addresses):</p>
+<figure><img src="../../static/images/blog/norepls-12.png" alt="Debug Session"><figcaption>Debug Session</figcaption></figure>
+<p>Before the intresting ASCII string is pushed onto the stack, we can also see EAX is being pushed, too. If we enter the call that sets EAX and step through the instructions, we can see it is building our string based on our registration code.</p>
+<figure><img src="../../static/images/blog/norepls-13.png" alt="String Building"><figcaption>String Building</figcaption></figure>
+<p>Through heavy analysis, I'm sure we could find out how the string is generated, however, this is time consuming and I'm sure there's any easier way to crack the program.</p>
+<p>Stepping through, we can see the license file is only created if the serials above match. If not, we run into the program telling us that the registration key failed.</p>
+<p>We can patch the program to jump to the &quot;Thank you for registering&quot; message to see if it fully registers the program:</p>
+<figure><img src="../../static/images/blog/norepls-14.png" alt="Patching Instructions"><figcaption>Patching Instructions</figcaption></figure>
+<figure><img src="../../static/images/blog/norepls-15.png" alt="Registration Success"><figcaption>Registration Success</figcaption></figure>
+<p>By patching the instruction, the &quot;(demo version)&quot; was removed from the title and we can now save our text file, however, after saving our changes and starting the patched program, the changes did not persist. We will need to create a valid license file in order for the program to think we have registered.</p>
+<p>Since we don't know the correct registration code to create the license file, we will make the program think we have entered in the right code. If we NOP the following instruction:</p>
+<figure><img src="../../static/images/blog/norepls-16.png" alt="NOP Instruction"><figcaption>NOP Instruction</figcaption></figure>
+<p>It creates a License.lic file with the contents set to &quot;SERIAL=TEST&quot;. Now that we have our license file, it's time to get truly register our program.</p>
+<p>We can assume that if the program finds the license file, the startup message won't appear, so let's first start with that.</p>
+<p>The following screenshot shows that if our serial in the license file is encoded and matches the ASCII string it is expecting, then a value of 1 will be moved into AL. However, because our serial does not match, it is set to 0. We can simply NOP this instruction:</p>
+<figure><img src="../../static/images/blog/norepls-17.png" alt="License Check"><figcaption>License Check</figcaption></figure>
+<p>After saving our changes and starting up the cracked program, no startup message ensues, the register button is greyed out, we can save our text file and the &quot;(demo version)&quot; string is removed from the title. We have successfully tricked the program into thinking we have provided a valid license file!</p>
+<h1>Part 3:</h1>
+<p>Part 3 is much like the same as the previous challenge, however, this time when registering, both a username and serial need to be provided. If the license.lic is left over from the previous challenge, the program won't start. We also get a &quot;Licensed to nobody&quot; in the about section.</p>
+<h2>Static analysis:</h2>
+<p>Examing the strings, I can see a few interesting strings:</p>
+<figure><img src="../../static/images/blog/norepls-18.png" alt="String Analysis"><figcaption>String Analysis</figcaption></figure>
+<p>NOREPLS-XXX looks to be a serial format. SERIAL= and NAME= looks to be our license file contents.</p>
+<p>If we double click on NOREPLS-XXX and scroll down, we can see some unicode strings such as License.lic, registration failed and invalid serial number.</p>
+<p>Checking the cross-references for License.lic, we can see it is the same as last challenge; if the username and serial are correct, a license.lic file is created.</p>
+<h2>Dynamic analysis:</h2>
+<p>Same as last challenge, we can patch the jump so that it jumps over the 5 second wait dialog and in turn fake-registering our program!</p>
+        </div>
+        <p class="back"><a href="../index.html">back to blog</a></p>
+      </article>
+    </main>
+    <footer>
+      <span>Quo</span><span> · </span><a href="../../index.html">home</a><span> · </span><a href="../../blog/index.html">blog</a><span> · </span><a href="../../projects/index.html">projects</a>
+    </footer>
+  </div>
+</body>
+</html>
