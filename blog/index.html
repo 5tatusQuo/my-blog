@@ -3,87 +3,189 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Blog | Quo</title>
+  <title>Blog | Quo's Blog</title>
   <meta name="description" content="Quo blog posts">
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
   <div class="container">
     <header class="site-header">
-      <a class="site-title" href="../index.html">Quo</a>
-      <nav>
-        <a href="../blog/index.html">blog</a>
-        <a href="../projects/index.html">projects</a>
-        <a href="../about/index.html">about</a>
-        <a href="https://github.com/5tatusQuo">github</a>
+      <a class="site-title" href="../index.html">Quo's Blog</a>
+      <nav aria-label="Primary navigation">
+        <a href="../blog/index.html" aria-current="page">Blog</a>
+        <a href="../projects/index.html">Projects</a>
+        <span class="nav-social" aria-label="Social links">
+          <a class="icon-link" href="https://github.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="brand-icon github-icon" aria-hidden="true"></span></a>
+          <a class="icon-link" href="https://x.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="X"><span class="brand-icon x-icon" aria-hidden="true"></span></a>
+        </span>
       </nav>
     </header>
+
     <main>
-      <section class="archive">
-        <h1>Blog</h1>
-        <ul class="post-list">
-        <li>
-          <span class="date">8 June 2025</span>
-          <div><a href="windows-forensics/index.html">Windows Forensics - Lateral Movement &amp; Persistence Analysis</a><p>Analysis of Windows forensics challenge involving lateral movement and persistence techniques, demonstrating DFIR tools and methodologies.</p></div>
-        </li>
-        <li>
-          <span class="date">7 June 2025</span>
-          <div><a href="windows-theme-spoofing/index.html">Windows Theme Spoofing</a><p>Analysis of CVE-2024-21320 Windows theme spoofing vulnerability using DFIR methods with Wireshark and MFT Viewer.</p></div>
-        </li>
-        <li>
-          <span class="date">6 June 2025</span>
-          <div><a href="forensics/index.html">Forensics - Memory Analysis with Volatility</a><p>Walkthrough of TryHackMe Forensics challenge using Volatility framework for memory analysis and malware detection.</p></div>
-        </li>
-        <li>
-          <span class="date">29 Feb 2020</span>
-          <div><a href="sbtvip-ctf-challenges/index.html">SBTVIP CTF Challenges - Network Analysis, Password Cracking &amp; Forensics</a><p>Walkthrough of various SBTVIP CTF challenges including ICMP data exfiltration, password cracking with leetspeak, and PNG file repair techniques.</p></div>
-        </li>
-        <li>
-          <span class="date">11 Feb 2020</span>
-          <div><a href="operation-chimera-2019/index.html">Operation Chimera 2019 - Digital Forensics Challenge</a><p>Walkthrough of the Operation Chimera 2019 Digital Forensics challenge from Security Blue Team, demonstrating disk image analysis techniques.</p></div>
-        </li>
-        <li>
-          <span class="date">11 Jan 2020</span>
-          <div><a href="picoctf-vault-door-challenges/index.html">picoCTF Vault Door Challenges</a><p>Walkthrough of the picoCTF Vault Door series challenges, demonstrating reverse engineering techniques on Java applications.</p></div>
-        </li>
-        <li>
-          <span class="date">18 Dec 2019</span>
-          <div><a href="norepls-part-0-3/index.html">NoREpls Part 0-3 - DTM Crackme Series</a><p>Walkthrough of the NoREpls crackme series by DTM, demonstrating progressive reverse engineering techniques across four increasingly complex challenges.</p></div>
-        </li>
-        <li>
-          <span class="date">1 Dec 2019</span>
-          <div><a href="crackme-challenge-4-5/index.html">Crackme Challenge #4 &amp; #5 - Windows x86 Reversing &amp; Windows API</a><p>Walkthrough of two Ringzer0 challenges: &quot;Windows x86 reversing is cool&quot; and &quot;Windows API for the win&quot;, demonstrating reverse engineering techniques on Windows executables.</p></div>
-        </li>
-        <li>
-          <span class="date">27 Nov 2019</span>
-          <div><a href="crackme-challenge-3/index.html">Crackme Challenge #3 - Ringzer0 Crack Me 1</a><p>Walkthrough of Ringzer0 Crack Me 1 challenge by Mr.Un1k0d3r, demonstrating PE resource analysis and dynamic reverse engineering techniques.</p></div>
-        </li>
-        <li>
-          <span class="date">6 Oct 2019</span>
-          <div><a href="flareon-2019-challenge-2/index.html">Flare-on 2019 Challenge #2 - Overlong</a><p>Walkthrough of Flare-on 2019 challenge #2 - Overlong, demonstrating assembly-level reverse engineering using Ollydbg.</p></div>
-        </li>
-        <li>
-          <span class="date">6 Oct 2019</span>
-          <div><a href="flareon-2019-challenge-3-flarebear/index.html">Flare-on 2019 Challenge #3 - FlareBear</a><p>Walkthrough of Flare-on 2019 challenge #3 - FlareBear, demonstrating Android APK reverse engineering techniques.</p></div>
-        </li>
-        <li>
-          <span class="date">6 Oct 2019</span>
-          <div><a href="flareon-2019-challenge-3/index.html">Flare-on 2019 Challenge #3 - Memecat Battlestation</a><p>Walkthrough of Flare-on 2019 challenge #3 - Memecat Battlestation, demonstrating .NET reverse engineering techniques using dnSpy.</p></div>
-        </li>
-        <li>
-          <span class="date">2 Oct 2019</span>
-          <div><a href="crackme-challenge-2/index.html">Crackme Challenge #2 - Visual C++ Crackme</a><p>Walkthrough of Saduz Visual C++ crackme challenge, demonstrating reverse engineering techniques and keygen development.</p></div>
-        </li>
-        <li>
-          <span class="date">25 Sept 2019</span>
-          <div><a href="crackme-challenge-1/index.html">Crackme Challenge #1 - 7eRoM 1st One Challenge</a><p>Walkthrough of 7eRoM Crackme challenge #1, demonstrating reverse engineering techniques and anti-debugging bypass methods.</p></div>
-        </li>
-        </ul>
+      <section class="section" aria-labelledby="blog-title">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Archive</p>
+            <h1 id="blog-title">Blog</h1>
+            <p>Reverse engineering, forensics, CTF walkthroughs, and investigation notes.</p>
+          </div>
+        </div>
+
+        <div class="blog-shell">
+          <aside class="tag-sidebar" aria-labelledby="tag-filter-title">
+            <h2 id="tag-filter-title">Tags</h2>
+            <div class="tag-list" role="list">
+              <button class="tag-button is-active" type="button" data-filter="all" aria-pressed="true">All <span>14</span></button>
+              <button class="tag-button" type="button" data-filter="forensics" aria-pressed="false">Forensics <span>5</span></button>
+              <button class="tag-button" type="button" data-filter="reverse-engineering" aria-pressed="false">Reverse engineering <span>9</span></button>
+              <button class="tag-button" type="button" data-filter="ctf" aria-pressed="false">CTF <span>5</span></button>
+              <button class="tag-button" type="button" data-filter="windows" aria-pressed="false">Windows <span>2</span></button>
+              <button class="tag-button" type="button" data-filter="crackme" aria-pressed="false">Crackme <span>5</span></button>
+              <button class="tag-button" type="button" data-filter="flareon" aria-pressed="false">Flare-on <span>3</span></button>
+            </div>
+          </aside>
+
+          <div class="post-feed" id="post-feed">
+            <article class="card post-card" data-tags="forensics windows dfir lateral-movement persistence rdp-analysis">
+              <p class="date">8 June 2025</p>
+              <h2><a href="windows-forensics/index.html">Windows Forensics - Lateral Movement &amp; Persistence Analysis</a></h2>
+              <p>Analysis of Windows forensics challenge involving lateral movement and persistence techniques, demonstrating DFIR tools and methodologies.</p>
+              <p class="tags"><span>forensics</span><span>windows</span><span>dfir</span><span>lateral-movement</span></p>
+              <a class="read-more" href="windows-forensics/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="forensics windows ntlm security dfir">
+              <p class="date">7 June 2025</p>
+              <h2><a href="windows-theme-spoofing/index.html">Windows Theme Spoofing</a></h2>
+              <p>Analysis of CVE-2024-21320 Windows theme spoofing vulnerability using DFIR methods with Wireshark and MFT Viewer.</p>
+              <p class="tags"><span>forensics</span><span>windows</span><span>ntlm</span><span>security</span></p>
+              <a class="read-more" href="windows-theme-spoofing/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="forensics memory-analysis volatility tryhackme malware-analysis">
+              <p class="date">6 June 2025</p>
+              <h2><a href="forensics/index.html">Forensics - Memory Analysis with Volatility</a></h2>
+              <p>Walkthrough of TryHackMe Forensics challenge using Volatility framework for memory analysis and malware detection.</p>
+              <p class="tags"><span>forensics</span><span>memory-analysis</span><span>volatility</span><span>malware-analysis</span></p>
+              <a class="read-more" href="forensics/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="ctf network-analysis password-cracking forensics wireshark scapy png-analysis">
+              <p class="date">29 Feb 2020</p>
+              <h2><a href="sbtvip-ctf-challenges/index.html">SBTVIP CTF Challenges - Network Analysis, Password Cracking &amp; Forensics</a></h2>
+              <p>Walkthrough of SBTVIP CTF challenges including ICMP data exfiltration, password cracking, and PNG file repair.</p>
+              <p class="tags"><span>ctf</span><span>network-analysis</span><span>forensics</span><span>wireshark</span></p>
+              <a class="read-more" href="sbtvip-ctf-challenges/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="forensics digital-forensics security-blue-team ctf disk-analysis">
+              <p class="date">11 Feb 2020</p>
+              <h2><a href="operation-chimera-2019/index.html">Operation Chimera 2019 - Digital Forensics Challenge</a></h2>
+              <p>Walkthrough of the Operation Chimera 2019 Digital Forensics challenge from Security Blue Team.</p>
+              <p class="tags"><span>forensics</span><span>digital-forensics</span><span>ctf</span><span>disk-analysis</span></p>
+              <a class="read-more" href="operation-chimera-2019/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="ctf picoctf reverse-engineering java cryptography">
+              <p class="date">11 Jan 2020</p>
+              <h2><a href="picoctf-vault-door-challenges/index.html">picoCTF Vault Door Challenges</a></h2>
+              <p>Walkthrough of the picoCTF Vault Door series challenges, demonstrating reverse engineering techniques on Java applications.</p>
+              <p class="tags"><span>ctf</span><span>picoctf</span><span>reverse-engineering</span><span>java</span></p>
+              <a class="read-more" href="picoctf-vault-door-challenges/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="crackme reverse-engineering dtm ollydbg ida license-cracking">
+              <p class="date">18 Dec 2019</p>
+              <h2><a href="norepls-part-0-3/index.html">NoREpls Part 0-3 - DTM Crackme Series</a></h2>
+              <p>Walkthrough of the NoREpls crackme series by DTM, covering four progressively complex reversing challenges.</p>
+              <p class="tags"><span>crackme</span><span>reverse-engineering</span><span>ollydbg</span><span>ida</span></p>
+              <a class="read-more" href="norepls-part-0-3/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="crackme reverse-engineering ringzer0 ollydbg ida x86 windows-api">
+              <p class="date">1 Dec 2019</p>
+              <h2><a href="crackme-challenge-4-5/index.html">Crackme Challenge #4 &amp; #5 - Windows x86 Reversing &amp; Windows API</a></h2>
+              <p>Walkthrough of two Ringzer0 challenges involving Windows x86 reversing and Windows API analysis.</p>
+              <p class="tags"><span>crackme</span><span>reverse-engineering</span><span>windows-api</span><span>x86</span></p>
+              <a class="read-more" href="crackme-challenge-4-5/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="crackme reverse-engineering ringzer0 ollydbg ida peview resources">
+              <p class="date">27 Nov 2019</p>
+              <h2><a href="crackme-challenge-3/index.html">Crackme Challenge #3 - Ringzer0 Crack Me 1</a></h2>
+              <p>Walkthrough of a Ringzer0 crackme by Mr.Un1k0d3r, covering PE resources and dynamic reverse engineering.</p>
+              <p class="tags"><span>crackme</span><span>reverse-engineering</span><span>ringzer0</span><span>peview</span></p>
+              <a class="read-more" href="crackme-challenge-3/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="flareon reverse-engineering ollydbg assembly ctf">
+              <p class="date">6 Oct 2019</p>
+              <h2><a href="flareon-2019-challenge-2/index.html">Flare-on 2019 Challenge #2 - Overlong</a></h2>
+              <p>Walkthrough of Flare-on 2019 Overlong, demonstrating assembly-level reverse engineering using Ollydbg.</p>
+              <p class="tags"><span>flareon</span><span>reverse-engineering</span><span>assembly</span><span>ctf</span></p>
+              <a class="read-more" href="flareon-2019-challenge-2/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="flareon reverse-engineering android apk dex2jar jd-gui">
+              <p class="date">6 Oct 2019</p>
+              <h2><a href="flareon-2019-challenge-3-flarebear/index.html">Flare-on 2019 Challenge #3 - FlareBear</a></h2>
+              <p>Walkthrough of Flare-on 2019 FlareBear, demonstrating Android APK reverse engineering techniques.</p>
+              <p class="tags"><span>flareon</span><span>reverse-engineering</span><span>android</span><span>apk</span></p>
+              <a class="read-more" href="flareon-2019-challenge-3-flarebear/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="flareon reverse-engineering .net dnspy ctf">
+              <p class="date">6 Oct 2019</p>
+              <h2><a href="flareon-2019-challenge-3/index.html">Flare-on 2019 Challenge #3 - Memecat Battlestation</a></h2>
+              <p>Walkthrough of Flare-on 2019 Memecat Battlestation, demonstrating .NET reverse engineering using dnSpy.</p>
+              <p class="tags"><span>flareon</span><span>reverse-engineering</span><span>.net</span><span>ctf</span></p>
+              <a class="read-more" href="flareon-2019-challenge-3/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="crackme reverse-engineering ollydbg ida ghidra keygen">
+              <p class="date">2 Oct 2019</p>
+              <h2><a href="crackme-challenge-2/index.html">Crackme Challenge #2 - Visual C++ Crackme</a></h2>
+              <p>Walkthrough of Saduz Visual C++ crackme challenge, including reverse engineering and keygen development.</p>
+              <p class="tags"><span>crackme</span><span>reverse-engineering</span><span>ghidra</span><span>keygen</span></p>
+              <a class="read-more" href="crackme-challenge-2/index.html">Read more</a>
+            </article>
+
+            <article class="card post-card" data-tags="crackme reverse-engineering ollydbg ida ghidra anti-debug">
+              <p class="date">25 Sept 2019</p>
+              <h2><a href="crackme-challenge-1/index.html">Crackme Challenge #1 - 7eRoM 1st One Challenge</a></h2>
+              <p>Walkthrough of 7eRoM Crackme challenge #1, covering reversing techniques and anti-debugging bypasses.</p>
+              <p class="tags"><span>crackme</span><span>reverse-engineering</span><span>anti-debug</span><span>ollydbg</span></p>
+              <a class="read-more" href="crackme-challenge-1/index.html">Read more</a>
+            </article>
+          </div>
+        </div>
       </section>
     </main>
+
     <footer>
-      <span>Quo</span><span> · </span><a href="../index.html">home</a><span> · </span><a href="../blog/index.html">blog</a><span> · </span><a href="../projects/index.html">projects</a>
+      <span>Quo's Blog</span><span> · </span><a href="../index.html">Home</a><span> · </span><a href="../blog/index.html">Blog</a><span> · </span><a href="../projects/index.html">Projects</a>
     </footer>
   </div>
+
+  <script>
+    const filterButtons = document.querySelectorAll("[data-filter]");
+    const postCards = document.querySelectorAll("[data-tags]");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter;
+
+        filterButtons.forEach((item) => {
+          const isSelected = item === button;
+          item.classList.toggle("is-active", isSelected);
+          item.setAttribute("aria-pressed", String(isSelected));
+        });
+        postCards.forEach((card) => {
+          const tags = card.dataset.tags.split(" ");
+          card.classList.toggle("is-hidden", filter !== "all" && !tags.includes(filter));
+        });
+      });
+    });
+  </script>
 </body>
 </html>

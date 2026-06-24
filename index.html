@@ -3,71 +3,125 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Home | Quo</title>
+  <title>Home | Quo's Blog</title>
   <meta name="description" content="Quo personal blog">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <header class="site-header">
-      <a class="site-title" href="index.html">Quo</a>
-      <nav>
-        <a href="blog/index.html">blog</a>
-        <a href="projects/index.html">projects</a>
-        <a href="about/index.html">about</a>
-        <a href="https://github.com/5tatusQuo">github</a>
+      <a class="site-title" href="index.html">Quo's Blog</a>
+      <nav aria-label="Primary navigation">
+        <a href="blog/index.html">Blog</a>
+        <a href="projects/index.html">Projects</a>
+        <span class="nav-social" aria-label="Social links">
+          <a class="icon-link" href="https://github.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="brand-icon github-icon" aria-hidden="true"></span></a>
+          <a class="icon-link" href="https://x.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="X"><span class="brand-icon x-icon" aria-hidden="true"></span></a>
+        </span>
       </nav>
     </header>
+
     <main>
-      <section class="intro">
-        <div>
-          <h1>Quo</h1>
-          <p>I write about reverse engineering, forensics, CTFs, Windows internals, and security investigations.</p>
-          <p>This site is plain HTML and CSS.</p>
+      <section class="hero panel" aria-labelledby="profile-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Reverse engineering · DFIR · Security research</p>
+          <h1 id="profile-title">Quo</h1>
+          <div class="gold-divider" aria-hidden="true"></div>
+          <p class="bio">I write technical notes and walkthroughs focused on reverse engineering, forensics, CTFs, Windows internals, and security investigations.</p>
+          <div class="hero-meta" aria-label="Writing topics">
+            <span class="chip">Windows internals</span>
+            <span class="chip">Memory forensics</span>
+            <span class="chip">CTF writeups</span>
+          </div>
         </div>
-        <img class="avatar" src="static/images/avatar.png" alt="Quo">
+        <div class="avatar-wrap">
+          <img class="avatar" src="static/images/pp.jpeg" alt="Quo profile picture">
+          <div class="profile-social-links" aria-label="Social links">
+            <a class="icon-link" href="https://github.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <span class="brand-icon github-icon" aria-hidden="true"></span>
+            </a>
+            <a class="icon-link" href="https://x.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="X">
+              <span class="brand-icon x-icon" aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
       </section>
-      <section class="archive">
-        <h2>Writing</h2>
-        <ul class="post-list">
-        <li>
-          <span class="date">8 June 2025</span>
-          <div><a href="blog/windows-forensics/index.html">Windows Forensics - Lateral Movement &amp; Persistence Analysis</a><p>Analysis of Windows forensics challenge involving lateral movement and persistence techniques, demonstrating DFIR tools and methodologies.</p></div>
-        </li>
-        <li>
-          <span class="date">7 June 2025</span>
-          <div><a href="blog/windows-theme-spoofing/index.html">Windows Theme Spoofing</a><p>Analysis of CVE-2024-21320 Windows theme spoofing vulnerability using DFIR methods with Wireshark and MFT Viewer.</p></div>
-        </li>
-        <li>
-          <span class="date">6 June 2025</span>
-          <div><a href="blog/forensics/index.html">Forensics - Memory Analysis with Volatility</a><p>Walkthrough of TryHackMe Forensics challenge using Volatility framework for memory analysis and malware detection.</p></div>
-        </li>
-        <li>
-          <span class="date">29 Feb 2020</span>
-          <div><a href="blog/sbtvip-ctf-challenges/index.html">SBTVIP CTF Challenges - Network Analysis, Password Cracking &amp; Forensics</a><p>Walkthrough of various SBTVIP CTF challenges including ICMP data exfiltration, password cracking with leetspeak, and PNG file repair techniques.</p></div>
-        </li>
-        <li>
-          <span class="date">11 Feb 2020</span>
-          <div><a href="blog/operation-chimera-2019/index.html">Operation Chimera 2019 - Digital Forensics Challenge</a><p>Walkthrough of the Operation Chimera 2019 Digital Forensics challenge from Security Blue Team, demonstrating disk image analysis techniques.</p></div>
-        </li>
-        <li>
-          <span class="date">11 Jan 2020</span>
-          <div><a href="blog/picoctf-vault-door-challenges/index.html">picoCTF Vault Door Challenges</a><p>Walkthrough of the picoCTF Vault Door series challenges, demonstrating reverse engineering techniques on Java applications.</p></div>
-        </li>
-        <li>
-          <span class="date">18 Dec 2019</span>
-          <div><a href="blog/norepls-part-0-3/index.html">NoREpls Part 0-3 - DTM Crackme Series</a><p>Walkthrough of the NoREpls crackme series by DTM, demonstrating progressive reverse engineering techniques across four increasingly complex challenges.</p></div>
-        </li>
-        <li>
-          <span class="date">1 Dec 2019</span>
-          <div><a href="blog/crackme-challenge-4-5/index.html">Crackme Challenge #4 &amp; #5 - Windows x86 Reversing &amp; Windows API</a><p>Walkthrough of two Ringzer0 challenges: &quot;Windows x86 reversing is cool&quot; and &quot;Windows API for the win&quot;, demonstrating reverse engineering techniques on Windows executables.</p></div>
-        </li>
-        </ul>
-        <p><a href="blog/index.html">all posts</a></p>
+
+      <section class="section" aria-labelledby="latest-posts">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Latest dispatches</p>
+            <h2 id="latest-posts">Latest Blog Posts</h2>
+          </div>
+          <a class="section-link" href="blog/index.html">All posts</a>
+        </div>
+
+        <div class="card-grid">
+          <article class="card">
+            <p class="date">8 June 2025</p>
+            <h3><a href="blog/windows-forensics/index.html">Windows Forensics - Lateral Movement &amp; Persistence Analysis</a></h3>
+            <p>Analysis of a Windows forensics challenge involving lateral movement, persistence techniques, and practical DFIR tooling.</p>
+            <p class="tags"><span>forensics</span><span>windows</span><span>dfir</span></p>
+            <a class="read-more" href="blog/windows-forensics/index.html">Read more</a>
+          </article>
+
+          <article class="card">
+            <p class="date">7 June 2025</p>
+            <h3><a href="blog/windows-theme-spoofing/index.html">Windows Theme Spoofing</a></h3>
+            <p>Analysis of CVE-2024-21320 Windows theme spoofing using Wireshark, MFT Viewer, and other investigation methods.</p>
+            <p class="tags"><span>forensics</span><span>windows</span><span>security</span></p>
+            <a class="read-more" href="blog/windows-theme-spoofing/index.html">Read more</a>
+          </article>
+
+          <article class="card">
+            <p class="date">6 June 2025</p>
+            <h3><a href="blog/forensics/index.html">Forensics - Memory Analysis with Volatility</a></h3>
+            <p>A TryHackMe forensics walkthrough using Volatility for memory analysis, process inspection, and malware discovery.</p>
+            <p class="tags"><span>forensics</span><span>volatility</span><span>malware-analysis</span></p>
+            <a class="read-more" href="blog/forensics/index.html">Read more</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="featured-projects">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Workshop</p>
+            <h2 id="featured-projects">Featured Projects</h2>
+          </div>
+          <a class="section-link" href="projects/index.html">All projects</a>
+        </div>
+
+        <div class="card-grid">
+          <article class="card project-card">
+            <p class="date">Project</p>
+            <h3><a href="projects/index.html">Phalanx</a></h3>
+            <p>Experimental C-based Linux EDR exploring host telemetry, detection primitives, and defensive engineering.</p>
+            <p class="tags"><span>C</span><span>Linux</span><span>EDR</span></p>
+            <a class="read-more" href="projects/index.html">Project details</a>
+          </article>
+
+          <article class="card project-card">
+            <p class="date">Project</p>
+            <h3><a href="projects/index.html">DFIR Toolkit</a></h3>
+            <p>Placeholder for a digital forensics and incident response project focused on repeatable investigation workflows.</p>
+            <p class="tags"><span>DFIR</span><span>Forensics</span><span>Automation</span></p>
+            <a class="read-more" href="projects/index.html">Project details</a>
+          </article>
+
+          <article class="card project-card">
+            <p class="date">Project</p>
+            <h3><a href="projects/index.html">EVTX Mapper</a></h3>
+            <p>C-based EVTX parser and relational mapper for turning Windows event data into structured investigation context.</p>
+            <p class="tags"><span>C</span><span>Windows</span><span>EVTX</span></p>
+            <a class="read-more" href="projects/index.html">Project details</a>
+          </article>
+        </div>
       </section>
     </main>
+
     <footer>
-      <span>Quo</span><span> · </span><a href="index.html">home</a><span> · </span><a href="blog/index.html">blog</a><span> · </span><a href="projects/index.html">projects</a>
+      <span>Quo's Blog</span><span> · </span><a href="index.html">Home</a><span> · </span><a href="blog/index.html">Blog</a><span> · </span><a href="projects/index.html">Projects</a>
     </footer>
   </div>
 </body>
