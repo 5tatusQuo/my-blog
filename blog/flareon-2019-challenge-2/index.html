@@ -6,6 +6,7 @@
   <title>Flare-on 2019 Challenge #2 - Overlong | Quo's Blog</title>
   <meta name="description" content="Walkthrough of Flare-on 2019 challenge #2 - Overlong, demonstrating assembly-level reverse engineering using Ollydbg.">
   <link rel="stylesheet" href="../../style.css">
+  <script src="../../static/js/markdown-post.js" defer></script>
 </head>
 <body>
   <div class="container">
@@ -21,32 +22,16 @@
       </nav>
     </header>
     <main>
-      <article class="post">
-        <p class="date">6 Oct 2019</p>
-        <h1>Flare-on 2019 Challenge #2 - Overlong</h1>
-        <p class="tags"><span>flareon</span> <span>reverse-engineering</span> <span>ollydbg</span> <span>assembly</span> <span>ctf</span></p>
-        <div class="content">
-<p>Welcome to the second Flare-on 2019 write up. For this one, we'll be looking at an application called &quot;Overlong&quot;, which is also the name of the challenge.</p>
-<p>The readme that comes with the challenge reads:</p>
-<p>&gt;The secret of this next challenge is cleverly hidden. However, with the right approach, finding the solution will not take an &lt;b&gt;overlong&lt;/b&gt; amount of time.</p>
-<h1>Dynamic Analysis:</h1>
-<p>There isn't much to the application. When executing a MessageBox shows the following:</p>
-<figure><img src="../../static/images/blog/flareon-2019-2-1.png" alt="Initial MessageBox"><figcaption>Initial MessageBox</figcaption></figure>
-<p>We load the executable into Ollydbg and we start debugging. it is relatively easy to find the decoding function. Within a few steps, we come to a call to the sub routine at address 0x401160. Stepping over the call and over the next instruction shows us that the string &quot;I never broke the encoding:&quot; is placed into the ESP register.</p>
-<p>We can now deduce that the function called beforehand is the function we need to be looking at.</p>
-<p>Stepping through this function slowly, we come across another call to 0x401000. This function seems like the real decoding function. A few instructions after the call to 0x401000, I noticed the address of the ASCII character &quot;I&quot; is being moved into EDX:</p>
-<figure><img src="../../static/images/blog/flareon-2019-2-2.png" alt="Assembly Analysis"><figcaption>Assembly Analysis</figcaption></figure>
-<p>After the execution of this instruction, we right click on the ECX register and follow the address in the memory dump. As we set a breakpoint at this instruction and run through the application, we begin to see our string being decoded in the dump:</p>
-<figure><img src="../../static/images/blog/flareon-2019-2-3.png" alt="Memory Dump"><figcaption>Memory Dump</figcaption></figure>
-<p>After decoding the &quot;:&quot; character, the loop exits and spawns our MessageBox with the decoded text.</p>
-<p>Initially I thought because of the &quot;:&quot; character, there must be more to decode. I restart the application and play through the loop again until I find the instruction that exits us out of the loop.</p>
-<p>We come here:</p>
-<figure><img src="../../static/images/blog/flareon-2019-2-4.png" alt="Loop Exit Condition"><figcaption>Loop Exit Condition</figcaption></figure>
-<p>We can see EAX is served as a counter. The length of the MessageBox text is 0x1c long. Coincidentally, the CMP instruction is looking for this value. If the value is not below 0x1c, it continues the loop. However, our EAX counter is 0x1c long, so the loop exits.</p>
-<p>What happens if we NOP this instruction?</p>
-<figure><img src="../../static/images/blog/flareon-2019-2-5.png" alt="Patched Instruction"><figcaption>Patched Instruction</figcaption></figure>
-<p>Bingo! We have retrieved the flag by patching the instruction that exits us out of the loop, which enables us to decode the rest of the text.</p>
+      <article class="post" data-markdown="/blog/flareon-2019-challenge-2/post.md">
+        <p class="date" data-post-date>6 Oct 2019</p>
+        <h1 data-post-title>Flare-on 2019 Challenge #2 - Overlong</h1>
+        <p class="tags" data-post-tags><span>flareon</span><span>reverse-engineering</span><span>ollydbg</span><span>assembly</span><span>ctf</span></p>
+        <div class="content" data-markdown-content>
+          <p class="muted">Loading post...</p>
         </div>
+        <noscript>
+          <p class="muted">JavaScript is required to render this markdown post. <a href="post.md">Open the markdown file</a>.</p>
+        </noscript>
         <p class="back"><a href="../index.html">back to blog</a></p>
       </article>
     </main>

@@ -6,6 +6,7 @@
   <title>Crackme Challenge #3 - Ringzer0 Crack Me 1 | Quo's Blog</title>
   <meta name="description" content="Walkthrough of Ringzer0 Crack Me 1 challenge by Mr.Un1k0d3r, demonstrating PE resource analysis and dynamic reverse engineering techniques.">
   <link rel="stylesheet" href="../../style.css">
+  <script src="../../static/js/markdown-post.js" defer></script>
 </head>
 <body>
   <div class="container">
@@ -21,46 +22,16 @@
       </nav>
     </header>
     <main>
-      <article class="post">
-        <p class="date">27 Nov 2019</p>
-        <h1>Crackme Challenge #3 - Ringzer0 Crack Me 1</h1>
-        <p class="tags"><span>crackme</span> <span>reverse-engineering</span> <span>ringzer0</span> <span>ollydbg</span> <span>ida</span> <span>peview</span> <span>resources</span></p>
-        <div class="content">
-<p>Today we'll be looking at a ringzer0 challenge called &quot;Crack Me 1&quot; made by Mr.Un1k0d3r and can be found here: <a href="https://ringzer0ctf.com/challenges/9">https://ringzer0ctf.com/challenges/9</a> - the challenge is worth 3 points.</p>
-<p>The goal of the challenge is to find the flag hidden within.</p>
-<p>When first executing the executable, we are presented with the following MessageBox:</p>
-<figure><img src="../../static/images/blog/crackme-3-1.png" alt="Initial MessageBox"><figcaption>Initial MessageBox</figcaption></figure>
-<p>After pressing OK, the program exits.</p>
-<h1>Static analysis:</h1>
-<p>I noticed in PEView that there is a custom resource section, suggesting that their might be hidden data within:</p>
-<figure><img src="../../static/images/blog/crackme-3-2.png" alt="PEView Resource Section"><figcaption>PEView Resource Section</figcaption></figure>
-<p>As I suspected, I was right. We can see the first bytes represent the ASCII value &quot;MZ&quot;, which is the magic number for an executable. This is also confirmed by the &quot;This program cannot be run in DOS mode&quot; message. Almost every Windows executable has this message at the beginning of the header.</p>
-<p>If we scroll further down, we can see some interesting text:</p>
-<figure><img src="../../static/images/blog/crackme-3-3.png" alt="Resource Content"><figcaption>Resource Content</figcaption></figure>
-<p>So far, we have deduced that there is a resource section hidden within the main PE file that also contains a PE file. We have found that a &quot;Secret Message&quot; may be hidden within the nested PE file.</p>
-<p>Moving over to IDA, we see the string that is used in the MessageBox when first executing the program. Taking a look at the imports, we see imports such as FindResourceA, LoadResource, MessageBoxA, AddAtomA, FindAtomA, and GetAtomNameA.</p>
-<p>We will focus on the Resource functions for now since we found an embedded exe within the resource section of the file.</p>
-<p>Our next goal is to find out how the resource is being loaded and what it's being loaded into. We might be able to see the flag using some dynamic analysis.</p>
-<p>Let's hop over to Ollydbg.</p>
-<h1>Dynamic analysis:</h1>
-<p>Stepping over instructions, we find ourselves in a function that has a peculiar ASCII string. The loop seems to call the &quot;rand&quot; function and creates a random string. Executing this loop multiple times yields different strings. As you can see below, the string returned for this one was &quot;vnasekutos&quot;:</p>
-<figure><img src="../../static/images/blog/crackme-3-4.png" alt="Random String Generation"><figcaption>Random String Generation</figcaption></figure>
-<p>Stepping a little further, we can see another string, &quot;.dll&quot;. Interesting.</p>
-<figure><img src="../../static/images/blog/crackme-3-5.png" alt="DLL Extension"><figcaption>DLL Extension</figcaption></figure>
-<p>After the above function exits, we find ourselves in the function that loads our resource. As you can see below, it is calling LoadResource for the RT_RCDATA section, which matches with what we found using PEView.</p>
-<figure><img src="../../static/images/blog/crackme-3-6.png" alt="LoadResource Call"><figcaption>LoadResource Call</figcaption></figure>
-<p>After stepping a little more, we can see a call to strcat which concatenates our string we found earlier to another string with the value set as our AppData\Roaming directory.</p>
-<figure><img src="../../static/images/blog/crackme-3-7.png" alt="String Concatenation"><figcaption>String Concatenation</figcaption></figure>
-<p>Finally, we can see a call to CreateFileA and WriteFile. We can now suspect that each time we execute the crack me, it creates a randomly-named dll file in our AppData\Roaming directory, loads the PE file found in the resource section and writes the PE file to our dll file.</p>
-<p>Let's take a look at that dll file.</p>
-<p>As you can see, I have executed the crack me a few times already:</p>
-<figure><img src="../../static/images/blog/crackme-3-8.png" alt="AppData Directory"><figcaption>AppData Directory</figcaption></figure>
-<p>When viewing one of these dll's in IDA, we quickly view the imports window and select the MessageBoxA function. We're taken here:</p>
-<figure><img src="../../static/images/blog/crackme-3-9.png" alt="DLL Analysis"><figcaption>DLL Analysis</figcaption></figure>
-<p>This is the same &quot;Secret Message&quot; string we saw earlier when viewing the resource section in PEView.</p>
-<p>Let's see if we can call the DisplayMessage function to display the secret message for us:</p>
-<figure><img src="../../static/images/blog/crackme-3-10.png" alt="DisplayMessage Function"><figcaption>DisplayMessage Function</figcaption></figure>
+      <article class="post" data-markdown="/blog/crackme-challenge-3/post.md">
+        <p class="date" data-post-date>27 Nov 2019</p>
+        <h1 data-post-title>Crackme Challenge #3 - Ringzer0 Crack Me 1</h1>
+        <p class="tags" data-post-tags><span>crackme</span><span>reverse-engineering</span><span>ringzer0</span><span>ollydbg</span><span>ida</span><span>peview</span><span>resources</span></p>
+        <div class="content" data-markdown-content>
+          <p class="muted">Loading post...</p>
         </div>
+        <noscript>
+          <p class="muted">JavaScript is required to render this markdown post. <a href="post.md">Open the markdown file</a>.</p>
+        </noscript>
         <p class="back"><a href="../index.html">back to blog</a></p>
       </article>
     </main>

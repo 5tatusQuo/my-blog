@@ -6,6 +6,7 @@
   <title>Flare-on 2019 Challenge #3 - FlareBear | Quo's Blog</title>
   <meta name="description" content="Walkthrough of Flare-on 2019 challenge #3 - FlareBear, demonstrating Android APK reverse engineering techniques.">
   <link rel="stylesheet" href="../../style.css">
+  <script src="../../static/js/markdown-post.js" defer></script>
 </head>
 <body>
   <div class="container">
@@ -21,96 +22,16 @@
       </nav>
     </header>
     <main>
-      <article class="post">
-        <p class="date">6 Oct 2019</p>
-        <h1>Flare-on 2019 Challenge #3 - FlareBear</h1>
-        <p class="tags"><span>flareon</span> <span>reverse-engineering</span> <span>android</span> <span>apk</span> <span>dex2jar</span> <span>jd-gui</span></p>
-        <div class="content">
-<p>Welcome to the third Flare-on 2019 challenge write up. This time we'll be looking at an application called FlareBear, which is also the name of the challenge.</p>
-<p>The readme that is included reads:</p>
-<p>&gt;We at Flare have created our own Tamagotchi pet, the flarebear. He is very fussy. Keep him alive and happy and he will give you the flag. This application is an .apk file, so we will need to download an Andorid emulator to run the application.</p>
-<p>After downloading BlueStacks, I imported the .apk file and started the app.</p>
-<h1>Dynamic Anlaysis:</h1>
-<p>When starting Flare Bear, we get the option to create a new bear. We name our bear &quot;1&quot;. Once started, it appears we have three buttons we can click. One of them feeds the bear, the other button allows us to play with the bear, and the other cleans up any poo. If there is no poo, we get a prompt stating there is no poo to clean. The more we feed the bear, the more he poos.</p>
-<h1>Static Analysis:</h1>
-<p>Since the file we are given is an .apk file, we can open it with an archive manager, such as 7-Zip. Inside it, we can see a classes.dex file. Once we extract this, we can use an application called dex2jar which will convert the file to a .jar file. We can decompile .jar files with JD-GUI (Java Decompiler).</p>
-<p>Using Java Decompiler, we can see a whole host of juicy functions to set our eyes on:</p>
-<figure><img src="../../static/images/blog/flareon-2019-3-1.png" alt="Java Decompiler Functions"><figcaption>Java Decompiler Functions</figcaption></figure>
-<p>The most interesting function we can turn our eyes too will be the &quot;danceWithFlag&quot; function. It appears this function loads the dancing animation resources, gets a password by calling the &quot;getPassword&quot; function, and decrypts the password.</p>
-<p>The &quot;getPassword&quot; returns a string by calling &quot;getStat&quot; and passing the strings 'f', 'p', and 'c' to it.</p>
-<p>Scrolling through the other functions, we can see &quot;danceWithFlag&quot; is called in the &quot;setMood&quot; function.</p>
-<figure><img src="../../static/images/blog/flareon-2019-3-2.png" alt="setMood Function"><figcaption>setMood Function</figcaption></figure>
-<p>So it seems the return value from &quot;isHappy&quot; and &quot;isEcstatic&quot; need to be true in order for the &quot;danceWithFlag&quot; function to be executed.</p>
-<p>The &quot;isHappy&quot; function doesn't appear to be interesting. It calls the &quot;getStat&quot; function with 'f' and 'p' strings, which I assume 'f' is for feed, and 'p' is for play. It then calculate the return value.</p>
-<p>The &quot;isEcstatic&quot; method is the final function called before we get the flag, so we can focus on this one.</p>
-<figure><img src="../../static/images/blog/flareon-2019-3-3.png" alt="isEcstatic Function"><figcaption>isEcstatic Function</figcaption></figure>
-<p>It appears the function gets the state of mass, happy, and clean and compares the values to 72, 30, and 0 respectively.</p>
-<p>So, how do we set these values?</p>
-<p>When looking around, I can see three functions of interest. &quot;changeMass&quot;, &quot;changeHappy&quot;, and &quot;changeClean&quot;.</p>
-<p>There are another three functions that call the above functions, which we can use to get the numbers we require. Those functions are called &quot;feed&quot;, &quot;play&quot;, and &quot;clean&quot;.</p>
-<figure><img src="../../static/images/blog/flareon-2019-3-4.png" alt="Function Example"><figcaption>Function Example</figcaption></figure>
-<p>The above is an example of what one of the three methods do. Going through each function, I have summarized how they each change the required property values.</p>
-<p>feed: mass += 10 happy += 2 clean -= 1</p>
-<p>play: mass -= 2 happy += 4 clean -= 1</p>
-<p>clean: happy -= 1 clean += 6</p>
-<p>So, with the help of Python, we can develop a script to help us find out how many times we need to press each button.</p>
-<pre><code>import random
-
-feed_count = 0
-play_count = 0
-clean_count = 0
-
-class Flare:
- def __init__(self):
-  self.mass = 0
-  self.happy = 0
-  self.clean = 0
-
- def do_feed(self):
-  self.mass += 10
-  self.happy += 2
-  self.clean -= 1
-  
- def do_play(self):
-  self.mass -= 2
-  self.happy += 4
-  self.clean -= 1
-  
- # need to call this function last
- def do_clean(self):
-  self.happy -= 1
-  self.clean += 6
- 
-if __name__ == &quot;__main__&quot;:
- f = Flare()</code></pre>
-<pre><code>while True:
- for i in range(random.randint(1, 20)):
-  f.do_feed()
-  feed_count+=1
- for i in range(random.randint(1, 20)):
-  f.do_play()
-  play_count+=1
- for i in range(random.randint(1, 20)):
-  f.do_clean()
-  clean_count+=1
- if f.mass==72 and f.happy==30 and f.clean==0:
-  print(&quot;Mass: &amp;#123;&amp;#125;, Happy: &amp;#123;&amp;#125;, Clean: &amp;#123;&amp;#125;&quot;.format(f.mass, f.happy, f.clean))
-  print(feed_count, play_count, clean_count)
-  break
- else:
-  f.mass = 0
-  f.happy = 0
-  f.clean = 0
-  
-  feed_count = 0
-  play_count = 0
-  clean_count = 0</code></pre>
-<p>The output is the following:</p>
-<pre><code>Mass: 72, Happy: 30, Clean: 0
-8 4 2</code></pre>
-<p>If we click the feed button 8 times, the play button 4 times and the clean button 2 times, we reveal the flag!</p>
-<figure><img src="../../static/images/blog/flareon-2019-3-5.png" alt="Final Flag"><figcaption>Final Flag</figcaption></figure>
+      <article class="post" data-markdown="/blog/flareon-2019-challenge-3-flarebear/post.md">
+        <p class="date" data-post-date>6 Oct 2019</p>
+        <h1 data-post-title>Flare-on 2019 Challenge #3 - FlareBear</h1>
+        <p class="tags" data-post-tags><span>flareon</span><span>reverse-engineering</span><span>android</span><span>apk</span><span>dex2jar</span><span>jd-gui</span></p>
+        <div class="content" data-markdown-content>
+          <p class="muted">Loading post...</p>
         </div>
+        <noscript>
+          <p class="muted">JavaScript is required to render this markdown post. <a href="post.md">Open the markdown file</a>.</p>
+        </noscript>
         <p class="back"><a href="../index.html">back to blog</a></p>
       </article>
     </main>
