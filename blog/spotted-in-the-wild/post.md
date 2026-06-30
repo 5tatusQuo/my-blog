@@ -427,4 +427,4 @@ The compromise began with a Telegram-delivered archive named `SANS SEC401.rar`. 
 
 From there, the attacker used BITS and Certutil to download and decode a second stage, unpacked scripts into `C:\Windows\Temp`, created scheduled-task persistence, performed local network discovery, staged the results in `BL4356.txt`, and then ran `Eventlogs.ps1` to tamper with logs. The strongest evidence came from the combined timeline: Telegram download artifacts, WinRAR registry/prefetch/event activity, BITS Client events, temporary script creation, PowerShell operational logs, and resident MFT data from deleted helper scripts.
 
-Those findings were enough to reconstruct the attack chain and complete the CyberDefenders challenge without needing to rely on a separate answer dump.
+Those findings were enough to reconstruct the attack chain and complete the CyberDefenders challenge.
