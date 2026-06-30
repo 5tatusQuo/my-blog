@@ -83,6 +83,40 @@
     };
   }
 
+  function isTableSeparator(line) {
+    return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+  }
+
+  function splitTableRow(line) {
+    return line
+      .trim()
+      .replace(/^\|/, "")
+      .replace(/\|$/, "")
+      .split("|")
+      .map((cell) => cell.trim());
+  }
+
+  function renderTable(lines, startIndex) {
+    const headers = splitTableRow(lines[startIndex]);
+    let index = startIndex + 2;
+    const rows = [];
+
+    while (index < lines.length && /\|/.test(lines[index]) && lines[index].trim()) {
+      rows.push(splitTableRow(lines[index]));
+      index += 1;
+    }
+
+    const headerHtml = headers.map((cell) => "<th>" + parseInline(cell) + "</th>").join("");
+    const bodyHtml = rows
+      .map((row) => "<tr>" + row.map((cell) => "<td>" + parseInline(cell) + "</td>").join("") + "</tr>")
+      .join("");
+
+    return {
+      html: "<table><thead><tr>" + headerHtml + "</tr></thead><tbody>" + bodyHtml + "</tbody></table>",
+      nextIndex: index
+    };
+  }
+
   function renderMarkdown(markdown) {
     const lines = markdown.replace(/\r\n/g, "\n").split("\n");
     const html = [];
@@ -154,6 +188,13 @@
         continue;
       }
 
+      if (index + 1 < lines.length && /\|/.test(line) && isTableSeparator(lines[index + 1])) {
+        const table = renderTable(lines, index);
+        html.push(table.html);
+        index = table.nextIndex;
+        continue;
+      }
+
       const paragraph = [line.trim()];
       index += 1;
 
@@ -164,7 +205,8 @@
         !/^(#{1,6})\s+/.test(lines[index]) &&
         !/^!\[([^\]]*)\]\((\S+)(?:\s+"([^"]+)")?\)$/.test(lines[index]) &&
         !/^>\s?/.test(lines[index]) &&
-        !/^([-*]|\d+\.)\s+/.test(lines[index])
+        !/^([-*]|\d+\.)\s+/.test(lines[index]) &&
+        !(index + 1 < lines.length && /\|/.test(lines[index]) && isTableSeparator(lines[index + 1]))
       ) {
         paragraph.push(lines[index].trim());
         index += 1;
