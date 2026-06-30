@@ -9,6 +9,8 @@ tags: [CyberDefenders, DFIR, Windows Forensics]
 
 This challenge investigates a Windows host involved in the fictional FinTrust Bank breach. The evidence pointed to a malicious archive delivered through Telegram, opened with WinRAR, and used to launch a second-stage payload. The attack chain ultimately created scripts under `C:\Windows\Temp`, established scheduled-task persistence, performed internal network discovery, staged the scan results for exfiltration, and then attempted to tamper with event logs.
 
+Challenge source: [CyberDefenders SpottedInTheWild](https://cyberdefenders.org/blueteam-ctf-challenges/spottedinthewild/)
+
 The key finding was that the archive abused **CVE-2023-38831**, a WinRAR archive-handling vulnerability that was widely exploited in the wild. In this case, the archive contained a decoy PDF name and a suspicious command script named `SANS SEC401.pdf .cmd`.
 
 ## Evidence and Tooling
@@ -381,20 +383,6 @@ Timeline filtering showed the script activity stopping at:
 
 ![Eventlogs.ps1 execution evidence](/static/images/blog/spotted-in-the-wild-19.png)
 
-## Answer Summary
-
-| Question | Answer |
-| --- | --- |
-| Application used to download the malicious file | `Telegram` |
-| Timestamp when suspicious file was first downloaded | `2024-02-03 07:33:20` |
-| Vulnerability exploited | `CVE-2023-38831` |
-| Odd malicious filename in the archive | `SANS SEC401.pdf .cmd` |
-| Second-stage malware URL | `http://172.18.35.10:8000/amanwhogetsnorest.jpg` |
-| Event-log tampering script | `eventlogs.ps1` |
-| Timestamp when the log-tampering script ran | `2024-02-03 07:38:01` |
-| Persistence command | `schtasks /create /sc minute /mo 3 /tn "whoisthebaba" /tr C:\Windows\Temp\run.bat /RL HIGHEST` |
-| File storing collected data | `C:\Users\Administrator\AppData\Local\Temp\BL4356.txt` |
-
 ## Indicators of Compromise
 
 ### Files and Paths
@@ -438,3 +426,5 @@ schtasks /create /sc minute /mo 3 /tn "whoisthebaba" /tr C:\Windows\Temp\run.bat
 The compromise began with a Telegram-delivered archive named `SANS SEC401.rar`. The archive structure and VirusTotal context showed that it abused CVE-2023-38831, causing WinRAR to execute `SANS SEC401.pdf .cmd` when the victim interacted with what looked like a PDF.
 
 From there, the attacker used BITS and Certutil to download and decode a second stage, unpacked scripts into `C:\Windows\Temp`, created scheduled-task persistence, performed local network discovery, staged the results in `BL4356.txt`, and then ran `Eventlogs.ps1` to tamper with logs. The strongest evidence came from the combined timeline: Telegram download artifacts, WinRAR registry/prefetch/event activity, BITS Client events, temporary script creation, PowerShell operational logs, and resident MFT data from deleted helper scripts.
+
+Those findings were enough to reconstruct the attack chain and complete the CyberDefenders challenge without needing to rely on a separate answer dump.
