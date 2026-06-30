@@ -83,6 +83,40 @@
     };
   }
 
+  function isTableSeparator(line) {
+    return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+  }
+
+  function splitTableRow(line) {
+    return line
+      .trim()
+      .replace(/^\|/, "")
+      .replace(/\|$/, "")
+      .split("|")
+      .map((cell) => cell.trim());
+  }
+
+  function renderTable(lines, startIndex) {
+    const headers = splitTableRow(lines[startIndex]);
+    let index = startIndex + 2;
+    const rows = [];
+
+    while (index < lines.length && /\|/.test(lines[index]) && lines[index].trim()) {
+      rows.push(splitTableRow(lines[index]));
+      index += 1;
+    }
+
+    const headerHtml = headers.map((cell) => "<th>" + parseInline(cell) + "</th>").join("");
+    const bodyHtml = rows
+      .map((row) => "<tr>" + row.map((cell) => "<td>" + parseInline(cell) + "</td>").join("") + "</tr>")
+      .join("");
+
+    return {
+      html: "<table><thead><tr>" + headerHtml + "</tr></thead><tbody>" + bodyHtml + "</tbody></table>",
+      nextIndex: index
+    };
+  }
+
   function renderMarkdown(markdown) {
     const lines = markdown.replace(/\r\n/g, "\n").split("\n");
     const html = [];
@@ -129,7 +163,7 @@
         const src = escapeHtml(image[2]);
         const caption = image[3] ? parseInline(image[3]) : "";
         const captionHtml = caption ? "<figcaption>" + caption + "</figcaption>" : "";
-        html.push('<figure><img src="' + src + '" alt="' + alt + '">' + captionHtml + "</figure>");
+        html.push('<figure><button class="image-preview-trigger" type="button" data-preview-src="' + src + '" data-preview-alt="' + alt + '"><img src="' + src + '" alt="' + alt + '"></button>' + captionHtml + "</figure>");
         index += 1;
         continue;
       }
@@ -154,6 +188,13 @@
         continue;
       }
 
+      if (index + 1 < lines.length && /\|/.test(line) && isTableSeparator(lines[index + 1])) {
+        const table = renderTable(lines, index);
+        html.push(table.html);
+        index = table.nextIndex;
+        continue;
+      }
+
       const paragraph = [line.trim()];
       index += 1;
 
@@ -164,7 +205,8 @@
         !/^(#{1,6})\s+/.test(lines[index]) &&
         !/^!\[([^\]]*)\]\((\S+)(?:\s+"([^"]+)")?\)$/.test(lines[index]) &&
         !/^>\s?/.test(lines[index]) &&
-        !/^([-*]|\d+\.)\s+/.test(lines[index])
+        !/^([-*]|\d+\.)\s+/.test(lines[index]) &&
+        !(index + 1 < lines.length && /\|/.test(lines[index]) && isTableSeparator(lines[index + 1]))
       ) {
         paragraph.push(lines[index].trim());
         index += 1;
@@ -207,6 +249,53 @@
     }
   }
 
+  function getPreview() {
+    let preview = document.querySelector("[data-image-preview]");
+    if (preview) {
+      return preview;
+    }
+
+    preview = document.createElement("div");
+    preview.className = "image-preview";
+    preview.setAttribute("data-image-preview", "");
+    preview.setAttribute("hidden", "");
+    preview.innerHTML = '<button class="image-preview-close" type="button" aria-label="Close preview">x</button><img alt="">';
+    document.body.appendChild(preview);
+
+    preview.addEventListener("click", (event) => {
+      if (event.target === preview || event.target.closest(".image-preview-close")) {
+        closePreview(preview);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !preview.hasAttribute("hidden")) {
+        closePreview(preview);
+      }
+    });
+
+    return preview;
+  }
+
+  function closePreview(preview) {
+    preview.setAttribute("hidden", "");
+    document.body.classList.remove("has-image-preview");
+  }
+
+  function bindImagePreviews(target) {
+    target.querySelectorAll("[data-preview-src]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const preview = getPreview();
+        const image = preview.querySelector("img");
+        image.src = button.getAttribute("data-preview-src");
+        image.alt = button.getAttribute("data-preview-alt") || "";
+        preview.removeAttribute("hidden");
+        document.body.classList.add("has-image-preview");
+        preview.querySelector(".image-preview-close").focus();
+      });
+    });
+  }
+
   document.querySelectorAll("[data-markdown]").forEach((article) => {
     const target = article.querySelector("[data-markdown-content]");
     const source = article.getAttribute("data-markdown");
@@ -222,6 +311,7 @@
         const parsed = parseFrontMatter(markdown);
         applyMetadata(article, parsed.data);
         target.innerHTML = renderMarkdown(parsed.body);
+        bindImagePreviews(target);
       })
       .catch(() => {
         target.innerHTML = '<p class="muted">This post could not be loaded. <a href="' + source + '">Open the markdown file</a>.</p>';
