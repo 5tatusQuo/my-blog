@@ -163,7 +163,7 @@
         const src = escapeHtml(image[2]);
         const caption = image[3] ? parseInline(image[3]) : "";
         const captionHtml = caption ? "<figcaption>" + caption + "</figcaption>" : "";
-        html.push('<figure><img src="' + src + '" alt="' + alt + '">' + captionHtml + "</figure>");
+        html.push('<figure><button class="image-preview-trigger" type="button" data-preview-src="' + src + '" data-preview-alt="' + alt + '"><img src="' + src + '" alt="' + alt + '"></button>' + captionHtml + "</figure>");
         index += 1;
         continue;
       }
@@ -249,6 +249,53 @@
     }
   }
 
+  function getPreview() {
+    let preview = document.querySelector("[data-image-preview]");
+    if (preview) {
+      return preview;
+    }
+
+    preview = document.createElement("div");
+    preview.className = "image-preview";
+    preview.setAttribute("data-image-preview", "");
+    preview.setAttribute("hidden", "");
+    preview.innerHTML = '<button class="image-preview-close" type="button" aria-label="Close preview">x</button><img alt="">';
+    document.body.appendChild(preview);
+
+    preview.addEventListener("click", (event) => {
+      if (event.target === preview || event.target.closest(".image-preview-close")) {
+        closePreview(preview);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !preview.hasAttribute("hidden")) {
+        closePreview(preview);
+      }
+    });
+
+    return preview;
+  }
+
+  function closePreview(preview) {
+    preview.setAttribute("hidden", "");
+    document.body.classList.remove("has-image-preview");
+  }
+
+  function bindImagePreviews(target) {
+    target.querySelectorAll("[data-preview-src]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const preview = getPreview();
+        const image = preview.querySelector("img");
+        image.src = button.getAttribute("data-preview-src");
+        image.alt = button.getAttribute("data-preview-alt") || "";
+        preview.removeAttribute("hidden");
+        document.body.classList.add("has-image-preview");
+        preview.querySelector(".image-preview-close").focus();
+      });
+    });
+  }
+
   document.querySelectorAll("[data-markdown]").forEach((article) => {
     const target = article.querySelector("[data-markdown-content]");
     const source = article.getAttribute("data-markdown");
@@ -264,6 +311,7 @@
         const parsed = parseFrontMatter(markdown);
         applyMetadata(article, parsed.data);
         target.innerHTML = renderMarkdown(parsed.body);
+        bindImagePreviews(target);
       })
       .catch(() => {
         target.innerHTML = '<p class="muted">This post could not be loaded. <a href="' + source + '">Open the markdown file</a>.</p>';

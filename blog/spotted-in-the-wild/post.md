@@ -1,8 +1,8 @@
 ---
 title: "CyberDefenders Spotted in the Wild Write-up"
 date: "30 June 2026"
-description: "CyberDefenders Spotted in the Wild DFIR write-up covering Telegram delivery, WinRAR CVE-2023-38831 exploitation, persistence, discovery, and log tampering."
-tags: [CyberDefenders, DFIR, Windows Forensics, WinRAR, CVE-2023-38831]
+description: "CyberDefenders Spotted in the Wild DFIR write-up covering Telegram delivery, malicious archive execution, persistence, discovery, and log tampering."
+tags: [CyberDefenders, DFIR, Windows Forensics]
 ---
 
 ## Overview
@@ -70,7 +70,9 @@ docker run --rm -v D:\Labs\timeline:/data log2timeline/plaso psort.py --output-t
 
 ## Initial Access: Telegram Download
 
-The first question was how the malicious file reached the host. Timeline filtering around Telegram showed browsing and installation activity on February 2, followed by the suspicious archive download on February 3.
+The first question was how the malicious file reached the host. The challenge context suggested that a WinRAR vulnerability had been exploited, so I started by searching the timeline for `.rar` files. That search surfaced the offending archive inside a Telegram Desktop downloads folder. From there, I pivoted backward in the timeline to look for earlier Telegram activity, which revealed the Telegram Desktop installation and the browsing activity that led to the malicious archive download.
+
+Timeline filtering around Telegram showed browsing and installation activity on February 2, followed by the suspicious archive download on February 3.
 
 The timeline showed visits to Telegram-related domains:
 
@@ -167,6 +169,11 @@ The malicious command script launched a second stage using BITS. A BITS Client e
 
 ![BITS Client event for second-stage download](/static/images/blog/spotted-in-the-wild-13.png)
 
+The recovered command logic came from `SANS SEC401.pdf .cmd`. I deobfuscated it statically. The file was a Windows batch script with two main obfuscation layers:
+
+- A UTF-16/byte-order mojibake layer where the pasted-looking characters decoded into ordinary BAT text.
+- BAT substring obfuscation where commands were reconstructed with expressions such as `%var:~offset,1%`.
+
 The recovered command script logic was:
 
 ```bat
@@ -255,7 +262,43 @@ The first-stage script then deleted:
 C:\Windows\system32\Tasks\whoisthebaba
 ```
 
-That deletion looks like an anti-forensics attempt against the task artifact, but the original creation command still appears in the recovered script and is the relevant persistence mechanism.
+That deletion looks like an anti-forensics attempt against the task file. The task file itself could not be recovered because it was non-resident, and the VHD did not appear to be a clean image of the full `C:` drive. However, the registry TaskCache still contained recoverable scheduled-task metadata.
+
+I used `RECmd` to search the SOFTWARE hive for the task name:
+
+```powershell
+$hive = 'E:\VSS1\Windows\System32\config\SOFTWARE'
+RECmd -f $hive --sa whoisthebaba
+```
+
+That search returned the TaskCache tree key and the task GUID:
+
+```text
+Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\whoisthebaba
+Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{5BAA9F05-9269-4DCA-A667-F464671D33F0}
+```
+
+![TaskCache search hits for whoisthebaba](/static/images/blog/spotted-in-the-wild-28.png)
+
+Querying the `Tasks\{GUID}` key recovered the metadata and action values:
+
+```powershell
+RECmd -f $hive --kn 'Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{5BAA9F05-9269-4DCA-A667-F464671D33F0}'
+```
+
+The key showed:
+
+```text
+Path = \whoisthebaba
+Date = 2024-02-03T09:34:40
+Author = DESKTOP-2R3AR22\Administrator
+URI = \whoisthebaba
+Actions = C:\Windows\Temp\run.bat
+```
+
+![TaskCache metadata and action values for whoisthebaba](/static/images/blog/spotted-in-the-wild-29.png)
+
+This confirmed that the scheduled task existed and pointed to `C:\Windows\Temp\run.bat`, even though the task file had been removed.
 
 ## Payload Behavior: Network Discovery and Exfil Staging
 
