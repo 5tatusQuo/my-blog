@@ -1,5 +1,5 @@
 ---
-title: "Zerologon Lab - DFIR Investigation Write-up"
+title: "CyberDefenders Zerologon Write-up"
 date: "1 July 2026"
 description: "DFIR write-up for the Zerologon Lab covering phishing delivery, Defender tampering, C2 beaconing, PowerShell discovery, scheduled-task persistence, lateral movement, AnyDesk installation, credential access, and collection."
 tags: [DFIR, Windows Forensics, Active Directory, Lateral Movement]
