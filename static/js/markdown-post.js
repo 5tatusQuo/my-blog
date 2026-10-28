@@ -1,4 +1,6 @@
 (function () {
+  let previewTrigger = null;
+
   function escapeHtml(value) {
     return value
       .replace(/&/g, "&amp;")
@@ -225,7 +227,7 @@
 
     if (data.title && title) {
       title.textContent = data.title;
-      document.title = data.title + " | Quo's Blog";
+      document.title = "5tatusquo — " + data.title.toLowerCase();
     }
 
     if (data.description) {
@@ -257,6 +259,9 @@
 
     preview = document.createElement("div");
     preview.className = "image-preview";
+    preview.setAttribute("role", "dialog");
+    preview.setAttribute("aria-modal", "true");
+    preview.setAttribute("aria-label", "Image preview");
     preview.setAttribute("data-image-preview", "");
     preview.setAttribute("hidden", "");
     preview.innerHTML = '<button class="image-preview-close" type="button" aria-label="Close preview">x</button><img alt="">';
@@ -269,8 +274,16 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !preview.hasAttribute("hidden")) {
+      if (preview.hasAttribute("hidden")) return;
+
+      if (event.key === "Escape") {
+        event.preventDefault();
         closePreview(preview);
+      }
+
+      if (event.key === "Tab") {
+        event.preventDefault();
+        preview.querySelector(".image-preview-close").focus();
       }
     });
 
@@ -280,6 +293,10 @@
   function closePreview(preview) {
     preview.setAttribute("hidden", "");
     document.body.classList.remove("has-image-preview");
+    const container = document.querySelector(".container");
+    if (container) container.inert = false;
+    if (previewTrigger) previewTrigger.focus();
+    previewTrigger = null;
   }
 
   function bindImagePreviews(target) {
@@ -289,8 +306,11 @@
         const image = preview.querySelector("img");
         image.src = button.getAttribute("data-preview-src");
         image.alt = button.getAttribute("data-preview-alt") || "";
+        previewTrigger = button;
         preview.removeAttribute("hidden");
         document.body.classList.add("has-image-preview");
+        const container = document.querySelector(".container");
+        if (container) container.inert = true;
         preview.querySelector(".image-preview-close").focus();
       });
     });

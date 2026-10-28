@@ -273,22 +273,17 @@ def wrapper(metadata):
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{title} | Quo's Blog</title>
+  <title>5tatusquo — {title.lower()}</title>
   <meta name="description" content="{description}">
-  <link rel="stylesheet" href="../../style.css">
-  <script src="../../static/js/markdown-post.js" defer></script>
+  <link rel="stylesheet" href="../../style.css?v=7">
+  <script src="../../static/js/markdown-post.js?v=2" defer></script>
 </head>
 <body>
   <div class="container">
     <header class="site-header">
-      <a class="site-title" href="../../index.html">Quo's Blog</a>
       <nav aria-label="Primary navigation">
-        <a href="../../blog/index.html">Blog</a>
-        <a href="../../projects/index.html">Projects</a>
-        <span class="nav-social" aria-label="Social links">
-          <a class="icon-link" href="https://github.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="brand-icon github-icon" aria-hidden="true"></span></a>
-          <a class="icon-link" href="https://x.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="X"><span class="brand-icon x-icon" aria-hidden="true"></span></a>
-        </span>
+        <a href="../../index.html">home</a>
+        <a href="../../blog/index.html" aria-current="page">blog</a>
       </nav>
     </header>
     <main>
@@ -305,10 +300,7 @@ def wrapper(metadata):
         <p class="back"><a href="../index.html">back to blog</a></p>
       </article>
     </main>
-    <footer>
-      <span>Quo's Blog</span><span> · </span><a href="../../index.html">Home</a><span> · </span><a href="../../blog/index.html">Blog</a><span> · </span><a href="../../projects/index.html">Projects</a>
-    </footer>
-  </div>
+</div>
 </body>
 </html>
 """

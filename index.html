@@ -3,127 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Home | Quo's Blog</title>
-  <meta name="description" content="Quo personal blog">
-  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#050505">
+  <title>5tatusquo — security research &amp; notes</title>
+  <meta name="description" content="Security engineering projects and cybersecurity writeups by Quo.">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
-<body>
-  <div class="container">
-    <header class="site-header">
-      <a class="site-title" href="index.html">Quo's Blog</a>
-      <nav aria-label="Primary navigation">
-        <a href="blog/index.html">Blog</a>
-        <a href="projects/index.html">Projects</a>
-        <span class="nav-social" aria-label="Social links">
-          <a class="icon-link" href="https://github.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="brand-icon github-icon" aria-hidden="true"></span></a>
-          <a class="icon-link" href="https://x.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="X"><span class="brand-icon x-icon" aria-hidden="true"></span></a>
-        </span>
-      </nav>
-    </header>
-
-    <main>
-      <section class="hero panel" aria-labelledby="profile-title">
-        <div class="hero-copy">
-          <p class="eyebrow">Reverse engineering · DFIR · Security research</p>
-          <h1 id="profile-title">Quo</h1>
-          <div class="gold-divider" aria-hidden="true"></div>
-          <p class="bio">I write technical notes and walkthroughs focused on reverse engineering, forensics, CTFs, Windows internals, and security investigations.</p>
-          <div class="hero-meta" aria-label="Writing topics">
-            <span class="chip">Windows internals</span>
-            <span class="chip">Memory forensics</span>
-            <span class="chip">CTF writeups</span>
+<body class="landing-body">
+  <div class="landing-shell">
+<main class="landing-main">
+      <h1 class="sr-only">Projects and cybersecurity blog</h1>
+<div class="navigation-stage" id="navigation-stage" style="--active-index: 0">
+        <div class="pointer-track" aria-hidden="true">
+          <div class="fox-pointer">
+            <img class="fox-ink" src="static/images/fox-mask-pointer.webp" alt="">
           </div>
         </div>
-        <div class="avatar-wrap">
-          <img class="avatar" src="static/images/ronin-portrait.webp" alt="Illustrated ronin holding a katana">
-          <div class="profile-social-links" aria-label="Social links">
-            <a class="icon-link" href="https://github.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-              <span class="brand-icon github-icon" aria-hidden="true"></span>
-            </a>
-            <a class="icon-link" href="https://x.com/5tatusQuo" target="_blank" rel="noopener noreferrer" aria-label="X">
-              <span class="brand-icon x-icon" aria-hidden="true"></span>
-            </a>
-          </div>
-        </div>
-      </section>
 
-      <section class="section" aria-labelledby="latest-posts">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">Latest dispatches</p>
-            <h2 id="latest-posts">Latest Blog Posts</h2>
-          </div>
-          <a class="section-link" href="blog/index.html">All posts</a>
-        </div>
+        <nav class="project-menu" aria-label="Projects and blog">
+          <a class="menu-item is-active" data-index="0" href="https://github.com/5tatusQuo/ichnos" target="_blank" rel="noopener noreferrer">
+            <span class="item-number">01</span>
+            <span class="item-copy"><span class="item-title">ichnos</span><span class="item-meta">security event engine</span></span>
+            <span class="item-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="menu-item" data-index="1" href="https://github.com/5tatusQuo/Kuebiko" target="_blank" rel="noopener noreferrer">
+            <span class="item-number">02</span>
+            <span class="item-copy"><span class="item-title">kuebiko</span><span class="item-meta">binary exploitation workbench</span></span>
+            <span class="item-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="menu-item" data-index="2" href="https://github.com/5tatusQuo/apt2sigma" target="_blank" rel="noopener noreferrer">
+            <span class="item-number">03</span>
+            <span class="item-copy"><span class="item-title">apt2sigma</span><span class="item-meta">APT-to-Sigma rule mapping</span></span>
+            <span class="item-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="menu-item" data-index="3" href="https://github.com/5tatusQuo/linux-edr" target="_blank" rel="noopener noreferrer">
+            <span class="item-number">04</span>
+            <span class="item-copy"><span class="item-title">linux-edr</span><span class="item-meta">endpoint detection research</span></span>
+            <span class="item-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="menu-item" data-index="4" href="blog/index.html">
+            <span class="item-number">05</span>
+            <span class="item-copy"><span class="item-title">blog</span><span class="item-meta">cybersecurity writeups</span></span>
+            <span class="item-arrow" aria-hidden="true">→</span>
+          </a>
+        </nav>
+      </div>
 
-        <div class="card-grid">
-          <article class="card">
-            <p class="date">1 July 2026</p>
-            <h3><a href="blog/zerologon/index.html">CyberDefenders Zerologon Write-up</a></h3>
-            <p>DFIR write-up covering phishing delivery, Defender tampering, C2, discovery, lateral movement, AnyDesk, credential access, and collection.</p>
-            <p class="tags"><span>DFIR</span><span>Windows Forensics</span><span>Active Directory</span><span>Lateral Movement</span></p>
-            <a class="read-more" href="blog/zerologon/index.html">Read more</a>
-          </article>
+</main>
 
-          <article class="card">
-            <p class="date">30 June 2026</p>
-            <h3><a href="blog/spotted-in-the-wild/index.html">CyberDefenders Spotted in the Wild Write-up</a></h3>
-            <p>DFIR write-up covering Telegram delivery, malicious archive execution, persistence, discovery, staging, and log tampering.</p>
-            <p class="tags"><span>CyberDefenders</span><span>DFIR</span><span>Windows Forensics</span></p>
-            <a class="read-more" href="blog/spotted-in-the-wild/index.html">Read more</a>
-          </article>
+</div>
 
-          <article class="card">
-            <p class="date">8 June 2025</p>
-            <h3><a href="blog/windows-forensics/index.html">Windows Forensics - Lateral Movement &amp; Persistence Analysis</a></h3>
-            <p>Analysis of a Windows forensics challenge involving lateral movement, persistence techniques, and practical DFIR tooling.</p>
-            <p class="tags"><span>forensics</span><span>windows</span><span>dfir</span></p>
-            <a class="read-more" href="blog/windows-forensics/index.html">Read more</a>
-          </article>
-
-        </div>
-      </section>
-
-      <section class="section" aria-labelledby="featured-projects">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">Workshop</p>
-            <h2 id="featured-projects">Featured Projects</h2>
-          </div>
-          <a class="section-link" href="projects/index.html">All projects</a>
-        </div>
-
-        <div class="card-grid">
-          <article class="card project-card">
-            <p class="date">Project</p>
-            <h3><a href="projects/index.html">Phalanx</a></h3>
-            <p>Experimental C-based Linux EDR exploring host telemetry, detection primitives, and defensive engineering.</p>
-            <p class="tags"><span>C</span><span>Linux</span><span>EDR</span></p>
-            <a class="read-more" href="projects/index.html">Project details</a>
-          </article>
-
-          <article class="card project-card">
-            <p class="date">Project</p>
-            <h3><a href="projects/index.html">DFIR Toolkit</a></h3>
-            <p>Placeholder for a digital forensics and incident response project focused on repeatable investigation workflows.</p>
-            <p class="tags"><span>DFIR</span><span>Forensics</span><span>Automation</span></p>
-            <a class="read-more" href="projects/index.html">Project details</a>
-          </article>
-
-          <article class="card project-card">
-            <p class="date">Project</p>
-            <h3><a href="projects/index.html">EVTX Mapper</a></h3>
-            <p>C-based EVTX parser and relational mapper for turning Windows event data into structured investigation context.</p>
-            <p class="tags"><span>C</span><span>Windows</span><span>EVTX</span></p>
-            <a class="read-more" href="projects/index.html">Project details</a>
-          </article>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <span>Quo's Blog</span><span> · </span><a href="index.html">Home</a><span> · </span><a href="blog/index.html">Blog</a><span> · </span><a href="projects/index.html">Projects</a>
-    </footer>
-  </div>
+  <script src="static/js/home-navigation.js"></script>
 </body>
 </html>
